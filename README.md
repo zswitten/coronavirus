@@ -1,5 +1,5 @@
 # Coronavirus
-Tackling the covid-19 pandemic with AI.
+Tackling the covid-19 pandemic with ML.
 
 ## Getting Started
 
@@ -24,3 +24,5 @@ Start a jupyter session.
 ```
 
 Run a notebook in the `notebooks` directory.
+
+Full GEXP data: GSE92742_Broad_LINCS_Level5_COMPZ.MODZ_n473647x12328.gctx.gz at https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE92742
