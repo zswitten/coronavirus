@@ -6,7 +6,7 @@ import torch.nn.functional as F
 from inhibition_model import Net
 from make_training_data import make_data
 
-# train_x, train_y, valid_x, valid_y, test_x, test_y = make_data()
+train_x, train_y, valid_x, valid_y, test_x, test_y = make_data()
 
 model = Net(input_dim=train_x.shape[1], hidden_shape=[64, 64])
 
@@ -19,7 +19,7 @@ def train_epoch(model, x, y):
         loss.backward()
         optimizer.step()
 
-def train_model(model, x, y, valid_x, valid_y, epochs=100):
+def train_model(model, train_x, train_y, valid_x, valid_y, epochs=100):
     print(
         'Training error',
         model.loss_func(model(valid_x), valid_y)
