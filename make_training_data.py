@@ -8,13 +8,13 @@ def load_gctx(gctx_file):
     parsed = parse_gctx.parse(gctx_file)
     return parsed.data_df
 
-def load_signature_df(signature_location):
-    if signature_location[-4:] == '.csv':
-        return pd.read_csv(signature_location, sep='\t')
-    elif signature_location[-5:] == '.gctx':
-        return load_gctx(signature_location)
+def load_gexp(gexp_location):
+    if gexp_location[-4:] == '.csv':
+        return pd.read_csv(gexp_location)
+    elif gexp_location[-5:] == '.gctx':
+        return load_gctx(gexp_location)
     else:
-        print("Improper signature location")
+        print("Improper gexp location")
         return None
 
 def filter_inhibition_df(inhibitiondf):
@@ -26,8 +26,8 @@ def make_dataset(inhibit_location, signature_location, gexp_location):
     inhibitiondf = pd.read_csv(inhibit_location)
     inhibitiondf = filter_inhibition_df(inhibitiondf)
 
-    signaturedf = load_signature_df(signature_location)
-    gexpdf = pd.read_csv(gexp_location)
+    signaturedf = pd.read_csv(signature_location, sep='\t')
+    gexpdf = load_gexp(gexp_location)
 
     df = signaturedf.merge(inhibitiondf, on='pert_id')[['sig_id', 'pert_id', 'Inh_index']]
     df['gexp'] = df.sig_id.apply(lambda x: np.array(gexpdf[x]) if x in gexpdf else None)
