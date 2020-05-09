@@ -27,7 +27,7 @@ def train_model(model, train_x, train_y, valid_x, valid_y, epochs=100):
         'Validation error',
         model.loss_func(model(train_x), train_y)
     )
-    optimizer = torch.optim.Adam(self.parameters(), lr=0.001)
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
     for epoch in range(epochs):
         train_epoch(model, train_x, train_y, optimizer)
         print(
