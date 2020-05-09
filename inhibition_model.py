@@ -13,7 +13,6 @@ class Net(nn.Module):
         self.fc2 = nn.Linear(hidden_shape1, hidden_shape2)
         self.out = nn.Linear(hidden_shape2, 1)
         self.loss_func = nn.MSELoss()
-        self.optimizer = torch.optim.Adam(self.parameters(), lr=0.001)
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
@@ -32,7 +31,6 @@ class NetWithEmbedding(nn.Module):
         self.fc2 = nn.Linear(hidden_shape1, hidden_shape2)
         self.out = nn.Linear(hidden_shape2, 1)
         self.loss_func = nn.MSELoss()
-        self.optimizer = torch.optim.Adam(self.parameters(), lr=0.001)
 
     def forward(self, x):
         x = F.relu(self.embedding(x))

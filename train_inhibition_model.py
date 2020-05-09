@@ -10,8 +10,7 @@ from make_training_data import make_data
 
 # model = Net(input_dim=train_x.shape[1], hidden_shape=[64, 64])
 
-def train_epoch(model, x, y):
-    optimizer = model.optimizer
+def train_epoch(model, x, y, optimizer):
     for x0, y0 in zip(x, y):
         prediction = model(x0)
         loss = model.loss_func(prediction, y0)
@@ -28,8 +27,9 @@ def train_model(model, train_x, train_y, valid_x, valid_y, epochs=100):
         'Validation error',
         model.loss_func(model(train_x), train_y)
     )
+    optimizer = torch.optim.Adam(self.parameters(), lr=0.001)
     for epoch in range(epochs):
-        train_epoch(model, train_x, train_y)
+        train_epoch(model, train_x, train_y, optimizer)
         print(
             'Training error',
             model.loss_func(model(train_x), train_y)
