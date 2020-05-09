@@ -2,6 +2,12 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.optim as optim
+from torch.utils.data import Dataset, DataLoader
+
 from vae import VAE
 
 DATA_FILE = 'data/level5_1000.csv'
@@ -64,8 +70,6 @@ def make_adam_optimizer(model):
 
 def train_vae(epochs=1000, batch_size=32, model=None):
     dims = [64, 7]
-    dim_1 = dims[0]
-    dim_2 = dims[1]
 
     seed = 2
     np.random.seed(seed)
@@ -77,7 +81,10 @@ def train_vae(epochs=1000, batch_size=32, model=None):
 
     data_loader = make_data_loader(data_df)
     if not model:
-        model = VAE(len(data_df), dim_1=dim_1, dim_2=dim_2)
+        model = VAE(
+            input_dim=len(data_df),
+            hidden_shape=dims
+        )
     optimizer = make_adam_optimizer(model)
 
     run_training(model, data_loader, optimizer, epochs=epochs)
