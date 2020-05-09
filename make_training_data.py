@@ -2,6 +2,20 @@ import pandas as pd
 import numpy as np
 import ast
 import torch
+import cmapPy.pandasGEXpress.parse_gctx as parse_gctx
+
+def load_gctx(gctx_file):
+    parsed = parse_gctx.parse(gctx_file)
+    return parsed.data_df
+
+def load_signature_df(signature_location):
+    if signature_location[-4:] == '.csv':
+        return pd.read_csv(signature_location, sep='\t')
+    elif signature_location[-5:] == '.gctx':
+        return load_gctx(signature_location)
+    else:
+        print("Improper signature location")
+        return None
 
 def filter_inhibition_df(inhibitiondf):
     inhibitiondf['pert_id'] = inhibitiondf.pert_id.apply(lambda x: ast.literal_eval(x))
@@ -12,7 +26,7 @@ def make_dataset(inhibit_location, signature_location, gexp_location):
     inhibitiondf = pd.read_csv(inhibit_location)
     inhibitiondf = filter_inhibition_df(inhibitiondf)
 
-    signaturedf = pd.read_csv(signature_location, sep='\t')
+    signaturedf = load_signature_df(signature_location)
     gexpdf = pd.read_csv(gexp_location)
 
     df = signaturedf.merge(inhibitiondf, on='pert_id')[['sig_id', 'pert_id', 'Inh_index']]
