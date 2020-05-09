@@ -6,9 +6,9 @@ import torch.nn.functional as F
 from inhibition_model import Net
 from make_training_data import make_data
 
-train_x, train_y, valid_x, valid_y, test_x, test_y = make_data()
+# train_x, train_y, valid_x, valid_y, test_x, test_y = make_data()
 
-model = Net(input_dim=train_x.shape[1], hidden_shape=[64, 64])
+# model = Net(input_dim=train_x.shape[1], hidden_shape=[64, 64])
 
 def train_epoch(model, x, y):
     optimizer = model.optimizer
