@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 import torch
 import torch.nn as nn
@@ -11,6 +11,7 @@ from torch.utils.data import Dataset, DataLoader
 from vae import VAE
 
 DATA_FILE = 'data/level5_1000.csv'
+DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 class Lincs(Dataset):
 
@@ -25,10 +26,11 @@ class Lincs(Dataset):
         return self.df.shape[1]
     
     def __getitem__(self, idx):
-        return torch.as_tensor(self.df.iloc[:,idx].values, dtype=torch.float32)
+        return torch.tensor(self.df.iloc[:,idx].values, dtype=torch.float32)
 
 def loss_function(recon_x, x, mu, logvar):
-    mse = F.mse_loss(x, recon_x, reduction='sum')
+    mu.to(DEVICE)
+    mse = F.mse_loss(x, recon_x, reduction=True)
     kld = 0.5*(mu.pow(2).sum(dim=-1) + torch.exp(logvar).sum(dim=-1) - (logvar+1).sum(dim=-1))
     
     return (mse + kld).sum(dim=-1)
@@ -39,6 +41,7 @@ def train_epoch(model, data_loader, optimizer):
     train_loss = 0
     for batch_idx, x in enumerate(data_loader):
         optimizer.zero_grad()
+        x = x.to(DEVICE)
         recon_batch, mu, logvar = model(x)
         loss = loss_function(recon_batch, x, mu, logvar)
         loss.backward()
@@ -53,7 +56,7 @@ def run_training(model, data_loader, optimizer, epochs=1000):
         train_losses.append(train_epoch(model, data_loader, optimizer))
         if epoch % 2 == 0:
             print(f'=======> Epoch: {epoch} Average loss: {train_losses[-1]}')
-    plt.plot(np.arange(len(train_losses)), train_losses)
+    #plt.plot(np.arange(len(train_losses)), train_losses)
 
 def load_data(location):
     df = pd.read_csv(location)
@@ -81,7 +84,12 @@ def train_vae(epochs=1000, batch_size=32, model=None):
 
     data_loader = make_data_loader(data_df)
     if not model:
-        model = VAE(input_dim=len(data_df), hidden_shape=dims)
+        model = VAE(
+            input_dim=len(data_df),
+            hidden_shape=dims
+        )
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    model.to(DEVICE)
     optimizer = make_adam_optimizer(model)
 
     run_training(model, data_loader, optimizer, epochs=epochs)
