@@ -2,6 +2,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import random
 
 from inhibition_model import Net
 from make_training_data import make_data
@@ -16,6 +17,8 @@ def train_epoch(model, x, y, optimizer):
         loss = model.loss_func(prediction, y0)
         optimizer.zero_grad()
         loss.backward()
+        if random.random() < 0.001:
+            print("Norms:", model.fc1.weight.grad.norm().item(), model.fc2.weight.grad.norm().item(), model.out.weight.grad.norm().item(), loss.item())
         optimizer.step()
 
 def train_model(model, train_x, train_y, valid_x, valid_y, epochs=100):
