@@ -34,10 +34,10 @@ class InhibitionDataset(Dataset):
         )
         return {'gexp': x, 'inhibition': y}
 
-# def make_data_loader(df, batch_size=32):
-#     dataset = InhibitionDataset(df)
-#     data_loader = DataLoader(dataset, batch_size=32)
-#     return data_loader
+def make_data_loader(df, batch_size=32):
+    dataset = InhibitionDataset(df)
+    data_loader = DataLoader(dataset, batch_size=32)
+    return data_loader
 
 # def train_epoch(model, x, y, optimizer):
 #     for x0, y0 in zip(x, y):
@@ -49,8 +49,15 @@ class InhibitionDataset(Dataset):
 #             print("Norms:", model.fc1.weight.grad.norm().item(), model.fc2.weight.grad.norm().item(), model.out.weight.grad.norm().item(), loss.item())
 #         optimizer.step()
 
-def train_epoch(model, x, y, optimizer, dataset, batch_size=32):
-    pass
+def train_epoch(model, x, y, optimizer, dataloader, batch_size=32):
+    for _, batch in enumerate(dataloader):
+        optimizer.zero_grad()
+        x = batch['gexp'].cuda()
+        y = batch['inhibition'].cuda()
+        prediction = model(x)
+        loss = model.loss_func(prediction, y.reshape(batch_size, 1))
+        loss.backward()
+        optimizer.step()
 
 def train_model(model, train_x, train_y, valid_x, valid_y, epochs=100):
     print(
