@@ -20,34 +20,37 @@ class InhibitionDataset(Dataset):
         return len(self.df)
 
     def __getitem__(self, idx):
-        if torch.is_tensor(idx):
-            idx = idx.to_list()
+        # if torch.is_tensor(idx):
+        #     idx = idx.to_list()
 
         x = self.df.loc[idx, 'gexp'].values
         x = torch.as_tensor(
-            np.array([row for row in x]),
+            # np.array([row for row in x]),
             dtype=torch.float32
         )
-        y = self.df.loc[idx, 'Inh_index'].values
+        y = self.df.loc[idx, 'Inh_index']#.values
         y = torch.as_tensor(
             y, dtype=torch.float32
         )
         return {'gexp': x, 'inhibition': y}
 
-def make_data_loader(df, batch_size=32):
-    dataset = InhibitionDataset(df)
-    data_loader = DataLoader(dataset, batch_size=32)
-    return data_loader
+# def make_data_loader(df, batch_size=32):
+#     dataset = InhibitionDataset(df)
+#     data_loader = DataLoader(dataset, batch_size=32)
+#     return data_loader
 
-def train_epoch(model, x, y, optimizer):
-    for x0, y0 in zip(x, y):
-        prediction = model(x0)
-        loss = model.loss_func(prediction, y0)
-        optimizer.zero_grad()
-        loss.backward()
-        if random.random() < 0.0001:
-            print("Norms:", model.fc1.weight.grad.norm().item(), model.fc2.weight.grad.norm().item(), model.out.weight.grad.norm().item(), loss.item())
-        optimizer.step()
+# def train_epoch(model, x, y, optimizer):
+#     for x0, y0 in zip(x, y):
+#         prediction = model(x0)
+#         loss = model.loss_func(prediction, y0)
+#         optimizer.zero_grad()
+#         loss.backward()
+#         if random.random() < 0.0001:
+#             print("Norms:", model.fc1.weight.grad.norm().item(), model.fc2.weight.grad.norm().item(), model.out.weight.grad.norm().item(), loss.item())
+#         optimizer.step()
+
+def train_epoch(model, x, y, optimizer, dataset, batch_size=32):
+    pass
 
 def train_model(model, train_x, train_y, valid_x, valid_y, epochs=100):
     print(
