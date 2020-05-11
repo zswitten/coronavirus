@@ -60,7 +60,7 @@ def train_epoch(model, optimizer, dataloader, batch_size=32, verbose=True):
         loss = model.loss_func(prediction, y.reshape(len(x), 1))
         train_loss += loss.item()
         loss.backward()
-        torch.nn.utils.clip_grad_norm_(znet.parameters(), 1.0)
+        torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
         optimizer.step()
     print("Training error:", train_loss / len(dataloader))
 
