@@ -49,15 +49,19 @@ def make_data_loader(df, batch_size=32):
 #             print("Norms:", model.fc1.weight.grad.norm().item(), model.fc2.weight.grad.norm().item(), model.out.weight.grad.norm().item(), loss.item())
 #         optimizer.step()
 
-def train_epoch(model, x, y, optimizer, dataloader, batch_size=32):
+def train_epoch(model, x, y, optimizer, dataloader, batch_size=32, verbose=True):
+    model.train()
+    train_loss = 0
     for _, batch in enumerate(dataloader):
         optimizer.zero_grad()
         x = batch['gexp'].cuda()
         y = batch['inhibition'].cuda()
         prediction = model(x)
         loss = model.loss_func(prediction, y.reshape(len(x), 1))
+        train_loss += loss.item()
         loss.backward()
         optimizer.step()
+    print("Training error:", train_loss / len(dataloader))
 
 def train_model(model, train_x, train_y, valid_x, valid_y, epochs=100):
     print(
