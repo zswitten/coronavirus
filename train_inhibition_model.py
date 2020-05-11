@@ -55,7 +55,7 @@ def train_epoch(model, x, y, optimizer, dataloader, batch_size=32):
         x = batch['gexp'].cuda()
         y = batch['inhibition'].cuda()
         prediction = model(x)
-        loss = model.loss_func(prediction, y.reshape(batch_size, 1))
+        loss = model.loss_func(prediction, y.reshape(len(x), 1))
         loss.backward()
         optimizer.step()
 
