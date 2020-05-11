@@ -49,7 +49,7 @@ def make_data_loader(df, batch_size=32):
 #             print("Norms:", model.fc1.weight.grad.norm().item(), model.fc2.weight.grad.norm().item(), model.out.weight.grad.norm().item(), loss.item())
 #         optimizer.step()
 
-def train_epoch(model, x, y, optimizer, dataloader, batch_size=32, verbose=True):
+def train_epoch(model, optimizer, dataloader, batch_size=32, verbose=True):
     model.train()
     train_loss = 0
     for _, batch in enumerate(dataloader):
