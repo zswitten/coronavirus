@@ -23,9 +23,9 @@ class InhibitionDataset(Dataset):
         # if torch.is_tensor(idx):
         #     idx = idx.to_list()
 
-        x = self.df.loc[idx, 'gexp'].values
+        x = self.df.loc[idx, 'gexp']#.values
         x = torch.as_tensor(
-            # np.array([row for row in x]),
+            x,# np.array([row for row in x]),
             dtype=torch.float32
         )
         y = self.df.loc[idx, 'Inh_index']#.values
