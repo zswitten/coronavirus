@@ -45,7 +45,7 @@ def train_epoch(model, x, y, optimizer):
         loss = model.loss_func(prediction, y0)
         optimizer.zero_grad()
         loss.backward()
-        if random.random() < 0.001:
+        if random.random() < 0.0001:
             print("Norms:", model.fc1.weight.grad.norm().item(), model.fc2.weight.grad.norm().item(), model.out.weight.grad.norm().item(), loss.item())
         optimizer.step()
 
@@ -63,10 +63,11 @@ def train_model(model, train_x, train_y, valid_x, valid_y, epochs=100):
         train_epoch(model, train_x, train_y, optimizer)
         print(
             'Training error',
-            model.loss_func(model(train_x), train_y)
+            model.loss_func(model(train_x), train_y).item()
         )
         print(
             'Validation error',
-            model.loss_func(model(valid_x), valid_y)
+            model.loss_func(model(valid_x), valid_y).item()
         )
+        print('\n')
     return model
